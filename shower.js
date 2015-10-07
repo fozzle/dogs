@@ -4,21 +4,42 @@
   var spawnChance = 0.05;
   var imageCount = 66;
   var dogs = [];
+  var dancer = new Dancer();
+  var audio = new Audio();
+  audio.src = 'mario.mp3';
+  dancer.load(audio);
 
   function initialize() {
     // Register an event listener to
     // call the resizeCanvas() function each time
     // the window is resized.
     window.addEventListener('resize', resizeCanvas, false);
+
     // Draw canvas border for the first time.
     resizeCanvas();
-
+    window.addEventListener('keypress', pause, false);
     setInterval(tick, 1000/ 70);
+    dancer.createKick({
+      frequency: [0, 10],
+      threshold: 0.1,
+      onKick: function() {
+        dogs.push(dog());
+      }
+    }).on();
+    dancer.play();
+  }
+
+  function pause() {
+    if (dancer.isPlaying()) {
+      dancer.pause();
+    } else {
+      dancer.play();
+    }
+
   }
 
   function redraw() {
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
     for (var i in dogs) {
       dogs[i].draw();
@@ -26,9 +47,9 @@
   }
 
   function update() {
-    if (Math.random() < spawnChance) {
-      dogs.push(dog());
-    }
+    // if (Math.random() < spawnChance) {
+    //
+    // }
 
     for (var i in dogs) {
       dogs[i].update();
